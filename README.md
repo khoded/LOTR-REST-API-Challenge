@@ -10,10 +10,10 @@ This is a nodejs, express REST application for Lord of the Rings API
 - Dployed on Heroku at https://lotr-rest.herokuapp.com
 
 #Routes for testing:
--/v1/movies
--/v1/movies/sort?sortBy=revenue&order=asc
--/v1/character?currentPage=1&pageSize=100
--/v1/character/sort?currentPage=1&pageSize=50&race=Human&gender=Male&order=asc
+- /v1/movies
+- /v1/movies/sort?sortBy=revenue&order=asc
+- /v1/character?currentPage=1&pageSize=100
+- /v1/character/sort?currentPage=1&pageSize=50&race=Human&gender=Male&order=asc
 
 Github Repository:
 
