@@ -1,4 +1,3 @@
-const {calculateLimitAndOffset, paginate} = require('paginate-info')
 class handlers {
     constructor(usecase) {
         this.usecase = usecase
@@ -6,7 +5,9 @@ class handlers {
 
     async getCharacters(req,res){
         try {
-            const data = await this.usecase.getCharacters()
+            const currentPage = req.query.currentPage
+            const pageSize   = req.query.pageSize
+            const data = await this.usecase.getCharacters(currentPage, pageSize)
             if(!data){
                 res.status(404).json({
                     success: false,
@@ -14,19 +15,12 @@ class handlers {
                     data: data
                 });
             }
-            const character = data.docs
-            const currentPage = req.query.currentPage
-            const pageSize   = req.query.pageSize
-            const {limit, offset} = calculateLimitAndOffset(currentPage, pageSize)
-            const dataLength = character.length
-            const paginatedData = character.slice(offset, offset + limit)
-            const paginationInfo = paginate(currentPage, dataLength, paginatedData)
-            
             res.status(200).json({
                 success: true,
                 message: 'character retrieved',
-                data: {result: paginatedData, meta:paginationInfo}
+                data: {result: data.paginatedData, meta: data.paginationInfo}
             });
+
         } catch (error) {
             res.status(400).json({
                 success: false,
@@ -36,6 +30,47 @@ class handlers {
         }
     }
 
+    async getSortedCharacters(req,res) {
+        try {
+        const currentPage = req.query.currentPage
+        const pageSize   = req.query.pageSize
+        const race = req.query.race;
+        const gender = req.query.gender;
+        const order = req.query.order;
+        const data = await this.usecase.getCharacters(currentPage, pageSize)
+        if(!data){
+            res.status(404).json({
+                success: false,
+                message: 'character not found',
+                data: data
+            });
+        }
 
+        const filterData = data.paginatedData.filter(character =>{
+            return character.race === race && character.gender === gender
+        })
+
+        if(order === "asc"){
+            //sort by _id
+            res.status(200).json({
+                success: true,
+                message: 'character retrieved',
+                data: {result: filterData.sort(), meta: data.paginationInfo}
+            });
+        }else{
+            res.status(200).json({
+                success: true,
+                message: 'character retrieved',
+                data: {result: filterData.sort().reverse(), meta: data.paginationInfo}
+            });
+        }
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: "Error fetchig character",
+            data: error
+        });
+    }
  }
+}
 module.exports = handlers

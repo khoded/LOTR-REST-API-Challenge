@@ -48,7 +48,7 @@ class moviesUseCase {
                                 }else if(sortFilter==="runtime" && order ==="asc" ){
                                     return  moviesArray.sort((a,b)=> a.runtimeInMinutes - b.runtimeInMinutes)
                                         }else if(sortFilter==="runtime" && order ==="dsc"){
-                                             return  moviesArray.sort((a,b)=> b.runtimeInMinutes - b.runtimeInMinutes)
+                                             return  moviesArray.sort((a,b)=> b.runtimeInMinutes - a.runtimeInMinutes)
                                                  }else{
                                                     return moviesArray
                                                      }    
